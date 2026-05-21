@@ -5,6 +5,8 @@
 // =========================================================
 using Prism.Ioc;
 using Prism.Modularity;
+using SortingMachine.Presentation.Views;
+using SortingMachine.Presentation.ViewModels;
 
 namespace SortingMachine.Application;
 
@@ -18,5 +20,6 @@ public class AppModule : IModule
     public void RegisterTypes(IContainerRegistry containerRegistry)
     {
         // 注册模块内 DI 映射 (随 Sprint 进度增加)
+        containerRegistry.RegisterForNavigation<MotionDebugView, MotionDebugViewModel>();
     }
 }

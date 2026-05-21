@@ -12,5 +12,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.*" />
     <PackageReference Include="FreeSql" Version="3.*" />
     <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.*" />
+    <PackageReference Include="Stateless" Version="5.*" />
   </ItemGroup>
 </Project>

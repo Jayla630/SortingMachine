@@ -175,6 +175,11 @@ public sealed class MockMotionController : IMotionController
         if (current.HasAlarm)
             return MotionResult.Failure(MotionErrorCode.AlarmActive, $"Axis {axis} has active alarm: {current.AlarmMessage}");
 
+        // 创建轴级 CTS，允许 SimulateAlarm 中断回零
+        var axisCts = new CancellationTokenSource();
+        _activeMovementCts[axis] = axisCts;
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct, axisCts.Token);
+
         try
         {
             // 模拟回零耗时 2 秒
@@ -182,10 +187,21 @@ public sealed class MockMotionController : IMotionController
             _axes[axis] = moving;
             RaiseStatusChanged(current, moving);
 
-            await Task.Delay(2000, ct);
+            await Task.Delay(2000, linkedCts.Token);
+
+            // 延迟完成后检查是否有报警（SimulateAlarm 可能在等待期间被调用）
+            var statusAfterDelay = _axes[axis];
+            if (statusAfterDelay.HasAlarm)
+            {
+                var stopped = statusAfterDelay with { IsMoving = false, Velocity = 0, Timestamp = DateTime.UtcNow };
+                _axes[axis] = stopped;
+                RaiseStatusChanged(statusAfterDelay, stopped);
+                return MotionResult.Failure(MotionErrorCode.AlarmActive,
+                    statusAfterDelay.AlarmMessage ?? "Alarm interrupted homing");
+            }
 
             var config = _configs[axis];
-            var homed = moving with
+            var homed = statusAfterDelay with
             {
                 Position = config.OriginOffset,
                 Velocity = 0,
@@ -196,16 +212,32 @@ public sealed class MockMotionController : IMotionController
                 Timestamp = DateTime.UtcNow
             };
             _axes[axis] = homed;
-            RaiseStatusChanged(moving, homed);
+            RaiseStatusChanged(statusAfterDelay, homed);
 
             return MotionResult.Ok();
         }
         catch (OperationCanceledException)
         {
+            // 区分：报警触发取消 or 外部取消
+            var alarmed = _axes[axis];
+            if (alarmed.HasAlarm)
+            {
+                var stopped = alarmed with { IsMoving = false, Velocity = 0, Timestamp = DateTime.UtcNow };
+                _axes[axis] = stopped;
+                RaiseStatusChanged(alarmed, stopped);
+                return MotionResult.Failure(MotionErrorCode.AlarmActive,
+                    alarmed.AlarmMessage ?? "Alarm interrupted homing");
+            }
+
             var cancelled = current with { IsMoving = false, Velocity = 0, Timestamp = DateTime.UtcNow };
             _axes[axis] = cancelled;
             RaiseStatusChanged(current, cancelled);
             return MotionResult.Failure(MotionErrorCode.Cancelled, $"HomeAsync for {axis} was cancelled");
+        }
+        finally
+        {
+            _activeMovementCts[axis] = null;
+            axisCts.Dispose();
         }
     }
 
