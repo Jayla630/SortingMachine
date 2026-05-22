@@ -1,4 +1,4 @@
-# 锂电池检测分选机控制系统
+# 锂电池检测分选机运动控制系统
 
 > 基于 WPF + Prism + .NET 8 的工业级运动控制上位机，用于锂电池电芯 OCV/IR 检测后的自动分选入仓。
 
@@ -49,14 +49,14 @@ OCV/IR 检测结果 → 等级判定（A/B/C/NG）→ XY 龙门定位料仓 → 
 
 ## 技术栈
 
-| 层级 | 技术选型 | 说明 |
-|------|---------|------|
-| UI 框架 | WPF + Prism 9 + MVVM | 模块化解耦，ViewModelLocator 自动绑定 |
-| 运动控制 | 接口抽象 + Mock 仿真 | 预留雷赛 EtherCAT SDK 适配 |
-| 状态机 | Stateless 5.x | 声明式状态转换，非法跃迁自动拦截 |
-| 数据持久化 | FreeSql + SQLite | 配方 JSON 列存储 / 日志规范化列存储 |
-| 测试框架 | xUnit + Moq + FluentAssertions | Abstract Base Class 契约测试模式 |
-| 运行时 | .NET 8 / C# 12 | 全异步 async/await，无同步阻塞 |
+| 层级       | 技术选型                       | 说明                                  |
+| ---------- | ------------------------------ | ------------------------------------- |
+| UI 框架    | WPF + Prism 9 + MVVM           | 模块化解耦，ViewModelLocator 自动绑定 |
+| 运动控制   | 接口抽象 + Mock 仿真           | 预留雷赛 EtherCAT SDK 适配            |
+| 状态机     | Stateless 5.x                  | 声明式状态转换，非法跃迁自动拦截      |
+| 数据持久化 | FreeSql + SQLite               | 配方 JSON 列存储 / 日志规范化列存储   |
+| 测试框架   | xUnit + Moq + FluentAssertions | Abstract Base Class 契约测试模式      |
+| 运行时     | .NET 8 / C# 12                 | 全异步 async/await，无同步阻塞        |
 
 ---
 
@@ -146,10 +146,10 @@ _machine.Configure(HomingState.HomingZ)
 
 ### 4. 双模式数据存储
 
-| 数据类型 | 存储策略 | 原因 |
-|---------|---------|------|
-| 配方 SortingRecipe | JSON 列（整条序列化） | 配方是原子单元，整体切换，不需跨配方聚合查询 |
-| 分选日志 SortingLog | 规范化列 | 需要按等级/时间统计，GROUP BY 查询必须规范化 |
+| 数据类型            | 存储策略              | 原因                                         |
+| ------------------- | --------------------- | -------------------------------------------- |
+| 配方 SortingRecipe  | JSON 列（整条序列化） | 配方是原子单元，整体切换，不需跨配方聚合查询 |
+| 分选日志 SortingLog | 规范化列              | 需要按等级/时间统计，GROUP BY 查询必须规范化 |
 
 ### 5. 契约测试架构
 
@@ -220,16 +220,16 @@ dotnet test SortingMachine.sln
 
 ## 测试覆盖
 
-| 测试模块 | 用例数 | 覆盖场景 |
-|---------|-------|---------|
-| MotionControllerContractTests | 23 | 使能/回零/运动/急停/事件/取消 |
-| HomingStateMachineTests | 21 | 状态转换/前置校验/回零顺序/故障注入 |
-| SafetyValidatorTests | 16 | 软限位/Z轴联锁/报警联锁/Jog预判 |
-| GradingRulesTests | 15 | NG/A/B/C 边界值完备覆盖 |
-| SortingServiceTests | 30 | 分选流程/运动顺序/并发保护/料仓满料 |
-| SortingLogRepositoryTests | 20 | SQLite 持久化/查询/统计/MES标记 |
-| MesUploadServiceTests | 14 | 批量上报/单条重传/MarkAsUploaded |
-| **合计** | **139** | **0 failed** |
+| 测试模块                      | 用例数  | 覆盖场景                            |
+| ----------------------------- | ------- | ----------------------------------- |
+| MotionControllerContractTests | 23      | 使能/回零/运动/急停/事件/取消       |
+| HomingStateMachineTests       | 21      | 状态转换/前置校验/回零顺序/故障注入 |
+| SafetyValidatorTests          | 16      | 软限位/Z轴联锁/报警联锁/Jog预判     |
+| GradingRulesTests             | 15      | NG/A/B/C 边界值完备覆盖             |
+| SortingServiceTests           | 30      | 分选流程/运动顺序/并发保护/料仓满料 |
+| SortingLogRepositoryTests     | 20      | SQLite 持久化/查询/统计/MES标记     |
+| MesUploadServiceTests         | 14      | 批量上报/单条重传/MarkAsUploaded    |
+| **合计**                      | **139** | **0 failed**                        |
 
 ---
 
