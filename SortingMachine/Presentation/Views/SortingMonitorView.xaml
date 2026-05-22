@@ -62,38 +62,10 @@
                     <Border CornerRadius="4" Padding="8,4" Background="{StaticResource PageBgBrush}" VerticalAlignment="Center" Margin="5,0,0,0">
                         <StackPanel Orientation="Horizontal">
                             <!-- 状态小圆点 -->
-                            <Ellipse Width="8" Height="8" Margin="0,0,6,0" VerticalAlignment="Center">
-                                <Ellipse.Style>
-                                    <Style TargetType="Ellipse">
-                                        <Setter Property="Fill" Value="#9CA3AF"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="运行中">
-                                                <Setter Property="Fill" Value="{StaticResource SuccessBrush}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="已暂停">
-                                                <Setter Property="Fill" Value="{StaticResource WarningBrush}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="空闲">
-                                                <Setter Property="Fill" Value="{StaticResource PrimaryBrush}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="计数已重置">
-                                                <Setter Property="Fill" Value="{StaticResource PrimaryBrush}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="请先在配方管理页激活配方">
-                                                <Setter Property="Fill" Value="{StaticResource DangerBrush}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="重置失败">
-                                                <Setter Property="Fill" Value="{StaticResource DangerBrush}"/>
-                                            </DataTrigger>
-                                            <!-- 模糊匹配以"报警"开头的状态 -->
-                                            <DataTrigger Binding="{Binding SortingStatus, Converter={x:Null}, Mode=OneWay}" Value="报警">
-                                                <Setter Property="Fill" Value="{StaticResource DangerBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Ellipse.Style>
-                            </Ellipse>
-                            <TextBlock Text="{Binding SortingStatus, Mode=OneWay}" FontSize="13" FontWeight="SemiBold" Foreground="#374151"/>
+                            <Ellipse Width="8" Height="8" Margin="0,0,6,0" VerticalAlignment="Center"
+                                     Fill="{Binding SortingStatus, Converter={StaticResource StatusToColorConverter}, Mode=OneWay}"/>
+                            <TextBlock Text="{Binding SortingStatus, Mode=OneWay}" FontSize="13" FontWeight="SemiBold" 
+                                       Foreground="{Binding SortingStatus, Converter={StaticResource StatusToColorConverter}, Mode=OneWay}"/>
                         </StackPanel>
                     </Border>
                     

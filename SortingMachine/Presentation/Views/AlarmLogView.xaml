@@ -72,7 +72,7 @@
                     <Separator Width="1" Height="20" Background="{StaticResource BorderBrush}" Margin="5,0"/>
 
                     <TextBlock Text="状态：" FontSize="13" Foreground="{StaticResource NeutralBrush}" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                    <TextBlock Text="{Binding StatusText, Mode=OneWay}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource SuccessBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding StatusText, Mode=OneWay}" FontSize="13" FontWeight="SemiBold" Foreground="{Binding StatusText, Converter={StaticResource StatusToColorConverter}, Mode=OneWay}" VerticalAlignment="Center"/>
 
                     <ProgressBar IsIndeterminate="True" Width="80" Height="8" Margin="15,0,0,0"
                                  Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}, Mode=OneWay}"/>

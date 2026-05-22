@@ -33,7 +33,11 @@
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <TextBlock Text="系统状态: " Foreground="{StaticResource NeutralBrush}"/>
-                    <TextBlock Text="{Binding PageStatus, Mode=OneWay}" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}"/>
+                    <TextBlock Text="{Binding PageStatus}"
+                         FontWeight="Bold"
+                         Foreground="{Binding PageStatus,
+                             Converter={StaticResource StatusToColorConverter},
+                             Mode=OneWay}"/>
                 </StackPanel>
             </DockPanel>
         </Border>

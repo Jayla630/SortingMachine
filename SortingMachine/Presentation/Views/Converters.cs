@@ -4,6 +4,7 @@
 // Sprint: S2 | Agent: Gemini CLI
 // =========================================================
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -69,5 +70,45 @@ public class StringToBrushConverter : IValueConverter
     {
         throw new NotImplementedException();
     }
+}
+
+public class StatusToColorConverter : IValueConverter
+{
+    private static readonly string[] RedKeywords =
+        ["报警", "失败", "异常", "错误", "限位", "急停", "Fault"];
+    private static readonly string[] GreenKeywords =
+        ["运行中", "运行", "启动", "成功", "完成", "就绪", "已清除", "已回零", "全绿", "Running", "Online"];
+    private static readonly string[] YellowKeywords =
+        ["暂停", "警告", "等待", "Warning", "Paused"];
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        var text = value as string ?? string.Empty;
+
+        // Try to retrieve brushes from App resources, fallback to raw colors if not found
+        if (RedKeywords.Any(k => text.Contains(k)))
+        {
+            return System.Windows.Application.Current?.TryFindResource("DangerBrush") as Brush 
+                ?? new SolidColorBrush(Color.FromRgb(0xE5, 0x39, 0x35));
+        }
+
+        if (GreenKeywords.Any(k => text.Contains(k)))
+        {
+            return System.Windows.Application.Current?.TryFindResource("SuccessBrush") as Brush 
+                ?? new SolidColorBrush(Color.FromRgb(0x43, 0xA0, 0x47));
+        }
+
+        if (YellowKeywords.Any(k => text.Contains(k)))
+        {
+            return System.Windows.Application.Current?.TryFindResource("WarningBrush") as Brush 
+                ?? new SolidColorBrush(Color.FromRgb(0xF9, 0xA8, 0x25));
+        }
+
+        return System.Windows.Application.Current?.TryFindResource("PrimaryBrush") as Brush 
+            ?? new SolidColorBrush(Color.FromRgb(0x15, 0x65, 0xC0));
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => throw new NotImplementedException();
 }
 

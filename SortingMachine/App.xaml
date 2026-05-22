@@ -7,6 +7,8 @@
         <ResourceDictionary>
             <local:BoolToColorConverter x:Key="BoolToColorConverter"/>
             <local:BoolToAlarmColorConverter x:Key="BoolToAlarmColorConverter"/>
+            <!-- 状态文字 → 颜色：包含报警/失败/异常/急停/限位 → 红；包含运行/启动/成功/完成/就绪 → 绿；包含暂停/警告 → 黄；其他 → 蓝 -->
+            <local:StatusToColorConverter x:Key="StatusToColorConverter"/>
 
             <!-- Global Design System Colors -->
             <SolidColorBrush x:Key="PrimaryBrush"      Color="#1565C0"/>
