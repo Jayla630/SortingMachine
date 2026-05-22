@@ -8,150 +8,220 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewmodels:RecipeViewModel}"
              prism:ViewModelLocator.AutoWireViewModel="True">
+    
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
     
-    <Grid Margin="10">
+    <Grid Background="{StaticResource PageBgBrush}" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- 顶部工具栏 -->
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
-            <Button Content="刷新列表" Command="{Binding LoadRecipesCommand}" Width="80" Margin="0,0,5,0"/>
-            <Button Content="新建默认配方" Command="{Binding CreateDefaultCommand}" Width="100" Margin="0,0,10,0"/>
-            
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0"/>
-            
-            <TextBlock Text="状态：" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="Gray"/>
-            <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"/>
-            
-            <ProgressBar IsIndeterminate="True" Width="100" Height="10" Margin="20,0,0,0"
-                         Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"/>
-        </StackPanel>
+        <!-- 1. 顶部状态与控制工具栏 -->
+        <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="12,10" Margin="5,0,5,10">
+            <DockPanel LastChildFill="True">
+                <!-- 右侧动作与状态信息 -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="状态：" VerticalAlignment="Center" Foreground="{StaticResource NeutralBrush}" FontSize="13"/>
+                    <TextBlock Text="{Binding StatusText, Mode=OneWay}" VerticalAlignment="Center" FontWeight="Bold" Foreground="#111827" FontSize="13" Margin="0,0,15,0"/>
+                    
+                    <ProgressBar IsIndeterminate="True" Width="80" Height="8" Margin="5,0,0,0"
+                                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}, Mode=OneWay}"/>
+                </StackPanel>
 
+                <!-- 左侧操作按钮 -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="刷新列表" 
+                            Command="{Binding LoadRecipesCommand}" 
+                            Style="{StaticResource SecondaryButton}" 
+                            Width="90" Height="32" Margin="0,0,8,0"/>
+                    <Button Content="新建默认配方" 
+                            Command="{Binding CreateDefaultCommand}" 
+                            Style="{StaticResource PrimaryButton}" 
+                            Width="110" Height="32"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- 2. 下方双列视图区域 -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="350"/>
+                <!-- 左列：配方列表 -->
+                <ColumnDefinition Width="360"/>
+                <!-- 右列：配方详情 -->
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- 左侧：配方列表 -->
-            <DockPanel Grid.Column="0" Margin="0,0,10,0">
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-                    <Button Content="激活选中" Command="{Binding ActivateCommand}" CommandParameter="{Binding SelectedRecipe}" 
-                            Width="80" Height="30" Margin="0,0,10,0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"/>
-                    <Button Content="复制副本" Command="{Binding DuplicateCommand}" CommandParameter="{Binding SelectedRecipe}" 
-                            Width="80" Height="30" Margin="0,0,10,0"/>
-                    <Button Content="删除配方" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedRecipe}" 
-                            Width="80" Height="30" Foreground="DarkRed"/>
-                </StackPanel>
-
-                <GroupBox Header="配方列表">
-                    <ListView ItemsSource="{Binding Recipes}" SelectedItem="{Binding SelectedRecipe}">
+            <!-- 左侧：配方列表 Card -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="5,0,5,0">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="配方列表" Style="{StaticResource CardTitle}" Margin="0,0,0,12"/>
+                    
+                    <!-- 底部操作按钮 -->
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+                        <Button Content="激活选中" 
+                                Command="{Binding ActivateCommand}" 
+                                CommandParameter="{Binding SelectedRecipe}" 
+                                Style="{StaticResource PrimaryButton}" 
+                                Width="90" Height="32" Margin="0,0,8,0"/>
+                        <Button Content="复制副本" 
+                                Command="{Binding DuplicateCommand}" 
+                                CommandParameter="{Binding SelectedRecipe}" 
+                                Style="{StaticResource SecondaryButton}" 
+                                Width="90" Height="32" Margin="0,0,8,0"/>
+                        <Button Content="删除配方" 
+                                Command="{Binding DeleteCommand}" 
+                                CommandParameter="{Binding SelectedRecipe}" 
+                                Style="{StaticResource DangerButton}" 
+                                Width="90" Height="32"/>
+                    </StackPanel>
+                    
+                    <!-- 列表展示 -->
+                    <ListView ItemsSource="{Binding Recipes, Mode=OneWay}" SelectedItem="{Binding SelectedRecipe}" BorderThickness="0" Background="Transparent">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                                <Setter Property="Padding" Value="6,10"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="2">
-                                    <TextBlock Text="★ " Foreground="Orange" Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}"/>
-                                    <TextBlock Text="{Binding ProductModel}" FontWeight="{Binding IsActive, ConverterParameter=Bold, Converter={StaticResource BoolToVis}}"/>
-                                    <TextBlock Text=" [" Foreground="Gray"/>
-                                    <TextBlock Text="{Binding RecipeId}" Foreground="Gray"/>
-                                    <TextBlock Text="]" Foreground="Gray"/>
+                                    <TextBlock Text="★ " Foreground="#F59E0B" Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}, Mode=OneWay}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding ProductModel, Mode=OneWay}" FontSize="13" 
+                                               FontWeight="{Binding IsActive, ConverterParameter=Bold, Converter={StaticResource BoolToVis}, Mode=OneWay}"
+                                               Foreground="#1E293B"/>
+                                    <TextBlock Text=" [" Foreground="#64748B"/>
+                                    <TextBlock Text="{Binding RecipeId, Mode=OneWay}" Foreground="#64748B" FontSize="12"/>
+                                    <TextBlock Text="]" Foreground="#64748B"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                </GroupBox>
-            </DockPanel>
+                </DockPanel>
+            </Border>
 
-            <!-- 右侧：详情展示 -->
-            <GroupBox Grid.Column="1" Header="配方详情 (只读)">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Margin="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+            <!-- 右侧：详情展示 Card -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="5,0,5,0">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="配方详情 (只读)" Style="{StaticResource CardTitle}" Margin="0,0,0,12"/>
+                    
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,5,0">
+                        <StackPanel>
+                            <!-- 基本信息 -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="型号：" Margin="5" Foreground="Gray"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedRecipe.ProductModel}" Margin="5" FontWeight="Bold" FontSize="16"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="型号：" Style="{StaticResource DataLabel}" VerticalAlignment="Center" Margin="5"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedRecipe.ProductModel, Mode=OneWay}" Margin="5" FontWeight="Bold" FontSize="18" Foreground="{StaticResource PrimaryBrush}"/>
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="ID：" Margin="5" Foreground="Gray"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedRecipe.RecipeId}" Margin="5"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="ID：" Style="{StaticResource DataLabel}" VerticalAlignment="Center" Margin="5"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedRecipe.RecipeId, Mode=OneWay}" Margin="5" Foreground="#1E293B" FontSize="13"/>
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="描述：" Margin="5" Foreground="Gray"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedRecipe.Description}" Margin="5" TextWrapping="Wrap"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="描述：" Style="{StaticResource DataLabel}" VerticalAlignment="Top" Margin="5"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedRecipe.Description, Mode=OneWay}" Margin="5" TextWrapping="Wrap" Foreground="#475569" LineHeight="18" FontSize="13"/>
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="创建时间：" Margin="5" Foreground="Gray"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedRecipe.CreatedAt}" Margin="5"/>
-                        </Grid>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="创建时间：" Style="{StaticResource DataLabel}" VerticalAlignment="Center" Margin="5"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedRecipe.CreatedAt, StringFormat='yyyy-MM-dd HH:mm:ss', Mode=OneWay}" Margin="5" Foreground="#475569" FontSize="13"/>
+                            </Grid>
 
-                        <Separator Margin="0,10"/>
+                            <Separator Margin="0,15" Background="{StaticResource BorderBrush}"/>
 
-                        <TextBlock Text="料仓配置" FontWeight="Bold" Margin="0,5"/>
-                        <ItemsControl ItemsSource="{Binding SelectedRecipe.Bins}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="#EEE" BorderThickness="0,0,0,1" Padding="5">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="100"/>
-                                                <ColumnDefinition Width="100"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="{Binding BinId}" FontWeight="Bold"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding TargetGrade, StringFormat='等级: {0}'}"/>
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                                <TextBlock Text="坐标: (" Foreground="Gray"/>
-                                                <TextBlock Text="{Binding X}"/>
-                                                <TextBlock Text=", "/>
-                                                <TextBlock Text="{Binding Y}"/>
-                                                <TextBlock Text=")"/>
-                                            </StackPanel>
-                                            <TextBlock Grid.Column="3" Text="{Binding MaxCapacity, StringFormat='容量: {0}'}" Foreground="Gray"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            <!-- 料仓配置 -->
+                            <TextBlock Text="料仓配置" FontWeight="SemiBold" FontSize="14" Foreground="#1E293B" Margin="0,0,0,8"/>
+                            <ItemsControl ItemsSource="{Binding SelectedRecipe.Bins, Mode=OneWay}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="8,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="100"/>
+                                                    <ColumnDefinition Width="100"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="120"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding BinId, Mode=OneWay}" FontWeight="Bold" FontSize="13" Foreground="{StaticResource PrimaryBrush}" VerticalAlignment="Center"/>
+                                                <Border Grid.Column="1" CornerRadius="3" Background="{StaticResource PrimaryLightBrush}" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding TargetGrade, StringFormat='等级: {0}', Mode=OneWay}" FontSize="11" Foreground="{StaticResource PrimaryBrush}" FontWeight="SemiBold"/>
+                                                </Border>
+                                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <TextBlock Text="坐标: (" Style="{StaticResource DataLabel}"/>
+                                                    <TextBlock Text="{Binding X, Mode=OneWay}" Foreground="#475569" FontWeight="Medium"/>
+                                                    <TextBlock Text=", " Foreground="#475569"/>
+                                                    <TextBlock Text="{Binding Y, Mode=OneWay}" Foreground="#475569" FontWeight="Medium"/>
+                                                    <TextBlock Text=")" Style="{StaticResource DataLabel}"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="3" Text="{Binding MaxCapacity, StringFormat='容量: {0}', Mode=OneWay}" Foreground="{StaticResource NeutralBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
-                        <Separator Margin="0,10"/>
+                            <Separator Margin="0,15" Background="{StaticResource BorderBrush}"/>
 
-                        <TextBlock Text="运动参数" FontWeight="Bold" Margin="0,5"/>
-                        <UniformGrid Columns="2">
-                            <StackPanel Orientation="Horizontal" Margin="5">
-                                <TextBlock Text="XY 速度: " Foreground="Gray"/>
-                                <TextBlock Text="{Binding SelectedRecipe.MotionParameters.XyVelocity}"/>
-                                <TextBlock Text=" mm/s"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="5">
-                                <TextBlock Text="Z 速度: " Foreground="Gray"/>
-                                <TextBlock Text="{Binding SelectedRecipe.MotionParameters.ZVelocity}"/>
-                                <TextBlock Text=" mm/s"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="5">
-                                <TextBlock Text="安全高度: " Foreground="Gray"/>
-                                <TextBlock Text="{Binding SelectedRecipe.MotionParameters.SafeZHeight}"/>
-                                <TextBlock Text=" mm"/>
-                            </StackPanel>
-                        </UniformGrid>
-                        
-                        <Separator Margin="0,10"/>
-                        <TextBlock Text="判定规则 (OCV/IR 阈值)" FontWeight="Bold" Margin="0,5"/>
-                        <TextBlock Text="分级逻辑已在 Domain.Recipe.GradingRules 中定义" FontStyle="Italic" Foreground="Gray" Margin="5,0"/>
-                    </StackPanel>
-                </ScrollViewer>
-            </GroupBox>
+                            <!-- 运动参数 -->
+                            <TextBlock Text="运动参数" FontWeight="SemiBold" FontSize="14" Foreground="#1E293B" Margin="0,0,0,8"/>
+                            <UniformGrid Columns="3" Margin="0,5,0,0">
+                                <Border Style="{StaticResource CardStyle}" Margin="4" Padding="12">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="XY 速度" Style="{StaticResource DataLabel}" HorizontalAlignment="Center"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                            <TextBlock Text="{Binding SelectedRecipe.MotionParameters.XyVelocity, Mode=OneWay}" Style="{StaticResource DataValue}" Foreground="{StaticResource PrimaryBrush}"/>
+                                            <TextBlock Text=" mm/s" Style="{StaticResource DataLabel}" VerticalAlignment="Bottom" Margin="2,0,0,4"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <Border Style="{StaticResource CardStyle}" Margin="4" Padding="12">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="Z 速度" Style="{StaticResource DataLabel}" HorizontalAlignment="Center"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                            <TextBlock Text="{Binding SelectedRecipe.MotionParameters.ZVelocity, Mode=OneWay}" Style="{StaticResource DataValue}" Foreground="{StaticResource PrimaryBrush}"/>
+                                            <TextBlock Text=" mm/s" Style="{StaticResource DataLabel}" VerticalAlignment="Bottom" Margin="2,0,0,4"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Style="{StaticResource CardStyle}" Margin="4" Padding="12">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="安全高度" Style="{StaticResource DataLabel}" HorizontalAlignment="Center"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                            <TextBlock Text="{Binding SelectedRecipe.MotionParameters.SafeZHeight, Mode=OneWay}" Style="{StaticResource DataValue}" Foreground="{StaticResource PrimaryBrush}"/>
+                                            <TextBlock Text=" mm" Style="{StaticResource DataLabel}" VerticalAlignment="Bottom" Margin="2,0,0,4"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </UniformGrid>
+                            
+                            <Separator Margin="0,15" Background="{StaticResource BorderBrush}"/>
+                            
+                            <!-- 判定规则 -->
+                            <TextBlock Text="判定规则 (OCV/IR 阈值)" FontWeight="SemiBold" FontSize="14" Foreground="#1E293B" Margin="0,0,0,8"/>
+                            <Border CornerRadius="6" Background="#F8FAFC" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="12,10" Margin="4">
+                                <TextBlock Text="分级逻辑已在 Domain.Recipe.GradingRules 中定义" FontStyle="Italic" Foreground="{StaticResource NeutralBrush}" FontSize="12"/>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

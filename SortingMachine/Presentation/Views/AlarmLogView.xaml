@@ -17,31 +17,9 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        
-        <!-- Style matching other pages -->
-        <Style x:Key="CardBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E4E7EB"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="15"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#000000" BlurRadius="10" ShadowDepth="1" Opacity="0.04" Direction="270"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#1F2937"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
-        </Style>
     </UserControl.Resources>
 
-    <Grid Background="#F8FAFC" Margin="10">
+    <Grid Background="{StaticResource PageBgBrush}" Margin="10">
         <Grid.RowDefinitions>
             <!-- 顶部 MES 状态栏 -->
             <RowDefinition Height="Auto"/>
@@ -52,31 +30,31 @@
         </Grid.RowDefinitions>
 
         <!-- 1. 顶部 MES 状态栏 -->
-        <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}" Padding="15,10" Margin="5,0,5,10">
+        <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="15,10" Margin="5,0,5,10">
             <DockPanel LastChildFill="True">
                 <!-- 右侧动作按钮 -->
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="检测连通" 
                             Command="{Binding PingMesCommand, Mode=OneWay}" 
-                            Width="90" Height="32" Margin="0,0,8,0"
-                            Background="#F3F4F6" Foreground="#4B5563" BorderBrush="#E5E7EB"/>
+                            Style="{StaticResource SecondaryButton}" 
+                            Width="90" Height="32" Margin="0,0,8,0"/>
                     <Button Content="批量上报MES" 
                             Command="{Binding UploadPendingCommand, Mode=OneWay}" 
-                            Width="110" Height="32"
-                            Background="#E0F2FE" Foreground="#0369A1" BorderBrush="#BAE6FD" FontWeight="SemiBold"/>
+                            Style="{StaticResource PrimaryButton}" 
+                            Width="120" Height="32"/>
                 </StackPanel>
 
                 <!-- 左侧 MES 状态信息 -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="MES 地址：" FontSize="14" Foreground="#6B7280" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding MesEndpoint, Mode=OneWay}" FontSize="14" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
+                    <TextBlock Text="MES 地址：" FontSize="13" Foreground="{StaticResource NeutralBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding MesEndpoint, Mode=OneWay}" FontSize="13" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
 
                     <!-- 连接指示灯 -->
-                    <Border CornerRadius="10" Padding="8,4" Background="#F3F4F6" VerticalAlignment="Center" Margin="15,0,15,0">
+                    <Border CornerRadius="4" Padding="8,4" Background="{StaticResource PageBgBrush}" VerticalAlignment="Center" Margin="15,0">
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,6,0"
+                            <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,6,0"
                                      Fill="{Binding IsMesConnected, Converter={StaticResource BoolToColorConverter}, Mode=OneWay}"/>
-                            <TextBlock Text="{Binding IsMesConnected, Converter={x:Null}, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" Foreground="#374151">
+                            <TextBlock FontSize="12" FontWeight="SemiBold" Foreground="#374151">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Text" Value="已离线"/>
@@ -91,10 +69,10 @@
                         </StackPanel>
                     </Border>
 
-                    <Separator Width="1" Height="20" Background="#E5E7EB" Margin="10,0"/>
+                    <Separator Width="1" Height="20" Background="{StaticResource BorderBrush}" Margin="5,0"/>
 
-                    <TextBlock Text="状态：" FontSize="14" Foreground="#6B7280" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding StatusText, Mode=OneWay}" FontSize="14" FontWeight="SemiBold" Foreground="#10B981" VerticalAlignment="Center"/>
+                    <TextBlock Text="状态：" FontSize="13" Foreground="{StaticResource NeutralBrush}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    <TextBlock Text="{Binding StatusText, Mode=OneWay}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource SuccessBrush}" VerticalAlignment="Center"/>
 
                     <ProgressBar IsIndeterminate="True" Width="80" Height="8" Margin="15,0,0,0"
                                  Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}, Mode=OneWay}"/>
@@ -103,44 +81,24 @@
         </Border>
 
         <!-- 2. 筛选栏 -->
-        <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Padding="15,10" Margin="5,0,5,10">
+        <Border Grid.Row="1" Style="{StaticResource CardStyle}" Padding="15,10" Margin="5,0,5,10">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="条码过滤：" VerticalAlignment="Center" Foreground="#475569" FontSize="13" FontWeight="Medium" Margin="0,0,5,0"/>
-                <TextBox Text="{Binding FilterCellId, UpdateSourceTrigger=PropertyChanged}" Width="150" Height="28" Padding="6,2" VerticalContentAlignment="Center" Background="#FAFAFA" BorderBrush="#E2E8F0" BorderThickness="1"/>
+                <TextBlock Text="条码过滤：" VerticalAlignment="Center" Foreground="{StaticResource NeutralBrush}" FontSize="13" FontWeight="Medium" Margin="0,0,5,0"/>
+                <TextBox Text="{Binding FilterCellId, UpdateSourceTrigger=PropertyChanged}" Width="150" Height="30" Padding="8,4" VerticalContentAlignment="Center" Background="#FAFAFA" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
 
-                <TextBlock Text="日期范围：" VerticalAlignment="Center" Foreground="#475569" FontSize="13" FontWeight="Medium" Margin="20,0,5,0"/>
-                <DatePicker SelectedDate="{Binding FilterFrom, Mode=TwoWay}" Width="120" Height="28" VerticalContentAlignment="Center"/>
-                <TextBlock Text="至" VerticalAlignment="Center" Foreground="#475569" FontSize="13" Margin="8,0"/>
-                <DatePicker SelectedDate="{Binding FilterTo, Mode=TwoWay}" Width="120" Height="28" VerticalContentAlignment="Center"/>
+                <TextBlock Text="日期范围：" VerticalAlignment="Center" Foreground="{StaticResource NeutralBrush}" FontSize="13" FontWeight="Medium" Margin="20,0,5,0"/>
+                <DatePicker SelectedDate="{Binding FilterFrom, Mode=TwoWay}" Width="130" Height="30" VerticalContentAlignment="Center" BorderBrush="{StaticResource BorderBrush}"/>
+                <TextBlock Text="至" VerticalAlignment="Center" Foreground="{StaticResource NeutralBrush}" FontSize="13" Margin="8,0"/>
+                <DatePicker SelectedDate="{Binding FilterTo, Mode=TwoWay}" Width="130" Height="30" VerticalContentAlignment="Center" BorderBrush="{StaticResource BorderBrush}"/>
 
                 <Button Content="查询" 
                         Command="{Binding RefreshCommand, Mode=OneWay}" 
-                        Width="70" Height="28" Margin="25,0,8,0"
-                        Background="#0F172A" Foreground="White" BorderThickness="0" FontWeight="SemiBold" FontSize="12">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Style.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="4" />
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                        Style="{StaticResource PrimaryButton}" 
+                        Width="80" Height="30" Margin="25,0,8,0"/>
                 <Button Content="清除" 
                         Command="{Binding ClearFilterCommand, Mode=OneWay}" 
-                        Width="70" Height="28"
-                        Background="#F3F4F6" Foreground="#4B5563" BorderBrush="#E5E7EB">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Style.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="4" />
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                        Style="{StaticResource SecondaryButton}" 
+                        Width="80" Height="30"/>
             </StackPanel>
         </Border>
 
@@ -153,35 +111,35 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- 左边：分选失败记录 -->
-            <Border Grid.Column="0" Style="{StaticResource CardBorderStyle}" Margin="5,0,5,5">
+            <!-- 左边：分选失败记录 Card -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="5,0,5,5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Row="0" Margin="0,0,0,10">
-                        <Border DockPanel.Dock="Right" Background="#FEE2E2" CornerRadius="4" Padding="8,4">
+                    <DockPanel Grid.Row="0" Margin="0,0,0,12">
+                        <Border DockPanel.Dock="Right" Background="{StaticResource DangerLightBrush}" CornerRadius="4" Padding="8,4">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="共 " FontSize="12" Foreground="#991B1B"/>
-                                <TextBlock Text="{Binding TotalFailedCount, Mode=OneWay}" FontSize="13" FontWeight="Bold" Foreground="#991B1B"/>
-                                <TextBlock Text=" 条记录" FontSize="12" Foreground="#991B1B"/>
+                                <TextBlock Text="共 " FontSize="12" Foreground="{StaticResource DangerBrush}"/>
+                                <TextBlock Text="{Binding TotalFailedCount, Mode=OneWay}" FontSize="13" FontWeight="Bold" Foreground="{StaticResource DangerBrush}"/>
+                                <TextBlock Text=" 条记录" FontSize="12" Foreground="{StaticResource DangerBrush}"/>
                             </StackPanel>
                         </Border>
-                        <TextBlock Text="分选失败记录" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Center" Margin="0"/>
+                        <TextBlock Text="分选失败记录" Style="{StaticResource CardTitle}" VerticalAlignment="Center" Margin="0"/>
                     </DockPanel>
 
                     <ListView Grid.Row="1" ItemsSource="{Binding FailedLogs, Mode=OneWay}" BorderThickness="0" Background="Transparent">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                <Setter Property="BorderBrush" Value="#F1F5F9"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
                                 <Setter Property="Padding" Value="4,8"/>
-                                <Setter Property="Background" Value="#FFEBEE"/>
+                                <Setter Property="Background" Value="{StaticResource DangerLightBrush}"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="#FFCDD2"/>
+                                        <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -217,15 +175,15 @@
                 </Grid>
             </Border>
 
-            <!-- 右边：待上报 MES 记录 -->
-            <Border Grid.Column="1" Style="{StaticResource CardBorderStyle}" Margin="5,0,5,5">
+            <!-- 右边：待上报 MES 记录 Card -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="5,0,5,5">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Row="0" Margin="0,0,0,10">
+                    <DockPanel Grid.Row="0" Margin="0,0,0,12">
                         <Border DockPanel.Dock="Right" Background="#FEF3C7" CornerRadius="4" Padding="8,4">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="待上报 " FontSize="12" Foreground="#92400E"/>
@@ -233,21 +191,21 @@
                                 <TextBlock Text=" 条记录" FontSize="12" Foreground="#92400E"/>
                             </StackPanel>
                         </Border>
-                        <TextBlock Text="待上报 MES 记录" Style="{StaticResource HeaderTextStyle}" VerticalAlignment="Center" Margin="0"/>
+                        <TextBlock Text="待上报 MES 记录" Style="{StaticResource CardTitle}" VerticalAlignment="Center" Margin="0"/>
                     </DockPanel>
 
                     <ListView Grid.Row="1" ItemsSource="{Binding PendingMesLogs, Mode=OneWay}" BorderThickness="0" Background="Transparent" AlternationCount="2">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                <Setter Property="BorderBrush" Value="#F1F5F9"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
                                 <Setter Property="Padding" Value="4,8"/>
                                 <Style.Triggers>
                                     <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                                         <Setter Property="Background" Value="#FAFBFD"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="#E0F2FE"/>
+                                        <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -288,23 +246,19 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="操作" Width="85">
+                                <GridViewColumn Header="操作" Width="95">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button Content="单条上报" 
                                                     Command="{Binding DataContext.UploadSingleCommand, RelativeSource={RelativeSource AncestorType=ListView}, Mode=OneWay}" 
                                                     CommandParameter="{Binding Mode=OneWay}" 
-                                                    Padding="6,2" Height="24" FontSize="11"
-                                                    Background="#E0F2FE" Foreground="#0369A1" BorderBrush="#BAE6FD" FontWeight="SemiBold">
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Style.Resources>
-                                                            <Style TargetType="Border">
-                                                                <Setter Property="CornerRadius" Value="3"/>
-                                                            </Style>
-                                                        </Style.Resources>
+                                                    Style="{StaticResource PrimaryButton}"
+                                                    Padding="8,3" Height="24" FontSize="11" Width="75">
+                                                <Button.Resources>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="CornerRadius" Value="3"/>
                                                     </Style>
-                                                </Button.Style>
+                                                </Button.Resources>
                                             </Button>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

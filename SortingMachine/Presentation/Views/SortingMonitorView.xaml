@@ -13,31 +13,9 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <local:StringToBrushConverter x:Key="StringToBrush" />
-        
-        <!-- Premium UI styles -->
-        <Style x:Key="CardBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E4E7EB"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="15"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#000000" BlurRadius="10" ShadowDepth="1" Opacity="0.04" Direction="270"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#1F2937"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
-        </Style>
     </UserControl.Resources>
 
-    <Grid Background="#F8FAFC" Margin="10">
+    <Grid Background="{StaticResource PageBgBrush}" Margin="10">
         <Grid.RowDefinitions>
             <!-- 顶部工具栏 & 配方状态信息 -->
             <RowDefinition Height="Auto"/>
@@ -46,28 +24,28 @@
         </Grid.RowDefinitions>
 
         <!-- 1. 顶部状态与控制工具栏 -->
-        <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}" Padding="12,10" Margin="5,0,5,10">
+        <Border Grid.Row="0" Style="{StaticResource CardStyle}" Padding="12,10" Margin="5,0,5,10">
             <DockPanel LastChildFill="True">
                 <!-- 右侧动作按钮与总分选计数 -->
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="启动自动分选" 
-                            Command="{Binding StartSortingCommand}" 
-                            Width="110" Height="32" Margin="0,0,8,0"
-                            Background="#E8F5E9" Foreground="#2E7D32" BorderBrush="#C8E6C9" FontWeight="SemiBold"/>
+                             Command="{Binding StartSortingCommand, Mode=OneWay}" 
+                             Width="110" Height="32" Margin="0,0,8,0"
+                             Background="#E8F5E9" Foreground="#2E7D32" BorderBrush="#C8E6C9" FontWeight="SemiBold"/>
                     <Button Content="停止分选" 
-                            Command="{Binding StopSortingCommand}" 
-                            Width="90" Height="32" Margin="0,0,15,0"
-                            Background="#FFEBEE" Foreground="#C62828" BorderBrush="#FFCDD2" FontWeight="SemiBold"/>
+                             Command="{Binding StopSortingCommand, Mode=OneWay}" 
+                             Width="90" Height="32" Margin="0,0,15,0"
+                             Background="#FFEBEE" Foreground="#C62828" BorderBrush="#FFCDD2" FontWeight="SemiBold"/>
                     
                     <Button Content="重置计数" 
-                            Command="{Binding ResetCountsCommand}" 
-                            Width="80" Height="32" Margin="0,0,20,0"
-                            Background="#F3F4F6" Foreground="#4B5563" BorderBrush="#E5E7EB"/>
+                             Command="{Binding ResetCountsCommand, Mode=OneWay}" 
+                             Width="80" Height="32" Margin="0,0,20,0"
+                             Background="#F3F4F6" Foreground="#4B5563" BorderBrush="#E5E7EB"/>
 
                     <Border Background="#E0F2FE" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="6" Padding="12,4">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="总分选: " Foreground="#0369A1" FontSize="13" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding TotalSortedCount}" Foreground="#0369A1" FontSize="15" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding TotalSortedCount, Mode=OneWay}" Foreground="#0369A1" FontSize="15" FontWeight="Bold"/>
                             <TextBlock Text=" 颗" Foreground="#0369A1" FontSize="13"/>
                         </StackPanel>
                     </Border>
@@ -75,13 +53,13 @@
 
                 <!-- 左侧配方与系统状态 -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="当前配方：" FontSize="14" Foreground="#6B7280" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding ActiveRecipeName}" FontSize="15" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
+                    <TextBlock Text="当前配方：" FontSize="14" Foreground="{StaticResource NeutralBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding ActiveRecipeName, Mode=OneWay}" FontSize="15" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
                     
-                    <Separator Width="1" Height="20" Background="#E5E7EB" Margin="15,0"/>
+                    <Separator Width="1" Height="20" Background="{StaticResource BorderBrush}" Margin="15,0"/>
 
-                    <TextBlock Text="设备状态：" FontSize="14" Foreground="#6B7280" VerticalAlignment="Center"/>
-                    <Border CornerRadius="4" Padding="8,4" Background="#F3F4F6" VerticalAlignment="Center" Margin="5,0,0,0">
+                    <TextBlock Text="设备状态：" FontSize="14" Foreground="{StaticResource NeutralBrush}" VerticalAlignment="Center"/>
+                    <Border CornerRadius="4" Padding="8,4" Background="{StaticResource PageBgBrush}" VerticalAlignment="Center" Margin="5,0,0,0">
                         <StackPanel Orientation="Horizontal">
                             <!-- 状态小圆点 -->
                             <Ellipse Width="8" Height="8" Margin="0,0,6,0" VerticalAlignment="Center">
@@ -89,38 +67,38 @@
                                     <Style TargetType="Ellipse">
                                         <Setter Property="Fill" Value="#9CA3AF"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SortingStatus}" Value="运行中">
-                                                <Setter Property="Fill" Value="#10B981"/>
+                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="运行中">
+                                                <Setter Property="Fill" Value="{StaticResource SuccessBrush}"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus}" Value="已暂停">
-                                                <Setter Property="Fill" Value="#F59E0B"/>
+                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="已暂停">
+                                                <Setter Property="Fill" Value="{StaticResource WarningBrush}"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus}" Value="空闲">
-                                                <Setter Property="Fill" Value="#3B82F6"/>
+                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="空闲">
+                                                <Setter Property="Fill" Value="{StaticResource PrimaryBrush}"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus}" Value="计数已重置">
-                                                <Setter Property="Fill" Value="#3B82F6"/>
+                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="计数已重置">
+                                                <Setter Property="Fill" Value="{StaticResource PrimaryBrush}"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus}" Value="请先在配方管理页激活配方">
-                                                <Setter Property="Fill" Value="#EF4444"/>
+                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="请先在配方管理页激活配方">
+                                                <Setter Property="Fill" Value="{StaticResource DangerBrush}"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding SortingStatus}" Value="重置失败">
-                                                <Setter Property="Fill" Value="#EF4444"/>
+                                            <DataTrigger Binding="{Binding SortingStatus, Mode=OneWay}" Value="重置失败">
+                                                <Setter Property="Fill" Value="{StaticResource DangerBrush}"/>
                                             </DataTrigger>
                                             <!-- 模糊匹配以"报警"开头的状态 -->
-                                            <DataTrigger Binding="{Binding SortingStatus, Converter={x:Null}}" Value="报警">
-                                                <Setter Property="Fill" Value="#EF4444"/>
+                                            <DataTrigger Binding="{Binding SortingStatus, Converter={x:Null}, Mode=OneWay}" Value="报警">
+                                                <Setter Property="Fill" Value="{StaticResource DangerBrush}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Ellipse.Style>
                             </Ellipse>
-                            <TextBlock Text="{Binding SortingStatus}" FontSize="13" FontWeight="SemiBold" Foreground="#374151"/>
+                            <TextBlock Text="{Binding SortingStatus, Mode=OneWay}" FontSize="13" FontWeight="SemiBold" Foreground="#374151"/>
                         </StackPanel>
                     </Border>
                     
                     <ProgressBar IsIndeterminate="True" Width="80" Height="8" Margin="15,0,0,0"
-                                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"/>
+                                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}, Mode=OneWay}"/>
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -144,12 +122,12 @@
                 </Grid.RowDefinitions>
 
                 <!-- 料仓状态 Card -->
-                <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}">
+                <Border Grid.Row="0" Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Text="料仓实时状态 (容量分布)" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Text="料仓实时状态 (容量分布)" Style="{StaticResource CardTitle}"/>
                         
                         <!-- 料仓横向或竖向分布列表 -->
-                        <ItemsControl ItemsSource="{Binding Bins}">
+                        <ItemsControl ItemsSource="{Binding Bins, Mode=OneWay}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <UniformGrid Columns="2" Rows="2" Margin="0,5,0,0"/>
@@ -157,34 +135,38 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderThickness="1" BorderBrush="#F1F5F9" CornerRadius="6" Background="#FAFCFF" Padding="12" Margin="4">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <!-- 信息排版 -->
-                                            <DockPanel Grid.Row="0" LastChildFill="True" Margin="0,0,0,8">
-                                                <TextBlock DockPanel.Dock="Right" Text="{Binding CountLabel, Mode=OneWay}" ToolTip="{Binding CountLabel, Mode=OneWay}" FontWeight="Bold" FontSize="13" Foreground="#475569"/>
-                                                
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding BinId, Mode=OneWay}" ToolTip="{Binding BinId, Mode=OneWay}" FontWeight="Bold" FontSize="14" Foreground="#0F172A"/>
-                                                    <Border Margin="8,0,0,0" CornerRadius="3" Background="#F1F5F9" Padding="6,2" VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding GradeLabel, Mode=OneWay}" ToolTip="{Binding GradeLabel, Mode=OneWay}" FontSize="11" Foreground="#475569" FontWeight="SemiBold"/>
-                                                    </Border>
-                                                    
+                                    <Border Style="{StaticResource CardStyle}" Margin="4" Padding="12">
+                                        <StackPanel>
+                                            <!-- 料仓名称 + 等级标签 -->
+                                            <DockPanel Margin="0,0,0,6">
+                                                <!-- 右侧：等级标签 + 满仓警告 -->
+                                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
                                                     <!-- 满仓警告文字 -->
-                                                    <Border Margin="8,0,0,0" CornerRadius="3" Background="#FEE2E2" Padding="6,2" VerticalAlignment="Center"
-                                                            Visibility="{Binding IsFull, Converter={StaticResource BoolToVis}}">
-                                                        <TextBlock Text="已满仓" FontSize="11" Foreground="#EF4444" FontWeight="Bold"/>
+                                                    <Border CornerRadius="3" Background="{StaticResource DangerLightBrush}" Padding="6,2" Margin="0,0,8,0"
+                                                            Visibility="{Binding IsFull, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+                                                        <TextBlock Text="已满仓" FontSize="11" Foreground="{StaticResource DangerBrush}" FontWeight="Bold"/>
                                                     </Border>
+                                                    <TextBlock Text="{Binding GradeLabel, Mode=OneWay}"
+                                                               Foreground="{StaticResource NeutralBrush}"
+                                                               FontSize="11" VerticalAlignment="Center"/>
                                                 </StackPanel>
+                                                <!-- 左侧：料仓名称 -->
+                                                <TextBlock Text="{Binding BinId, Mode=OneWay}"
+                                                           FontWeight="SemiBold" FontSize="13"
+                                                           Foreground="{StaticResource PrimaryBrush}"
+                                                           TextTrimming="None" VerticalAlignment="Center"/>
                                             </DockPanel>
                                             
                                             <!-- 进度条 -->
-                                            <ProgressBar Value="{Binding FillPercent, Mode=OneWay}" Maximum="100" Height="20"
+                                            <ProgressBar Value="{Binding FillPercent, Mode=OneWay}" Maximum="100" Height="20" Margin="0,0,0,4"
                                                          Foreground="{Binding StatusColor, Mode=OneWay}"/>
-                                        </Grid>
+                                            
+                                            <!-- 计数文字 -->
+                                            <TextBlock Text="{Binding CountLabel, Mode=OneWay}"
+                                                       HorizontalAlignment="Right"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource NeutralBrush}"/>
+                                        </StackPanel>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -193,20 +175,20 @@
                 </Border>
 
                 <!-- 最近分选记录 Card -->
-                <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Margin="5,5,5,0">
+                <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="5,5,5,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="最近分选记录 (实时滚动)" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Row="0" Text="最近分选记录 (实时滚动)" Style="{StaticResource CardTitle}"/>
 
-                        <ListView Grid.Row="1" ItemsSource="{Binding RecentLogs}" BorderThickness="0" Background="Transparent" AlternationCount="2">
+                        <ListView Grid.Row="1" ItemsSource="{Binding RecentLogs, Mode=OneWay}" BorderThickness="0" Background="Transparent" AlternationCount="2">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                    <Setter Property="BorderBrush" Value="#F1F5F9"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
                                     <Setter Property="Padding" Value="4,8"/>
                                     <Style.Triggers>
                                         <!-- 隔行背景变色 -->
@@ -214,12 +196,12 @@
                                             <Setter Property="Background" Value="#FAFBFD"/>
                                         </Trigger>
                                         <!-- 分选失败整行浅红色高亮 -->
-                                        <DataTrigger Binding="{Binding IsSuccess}" Value="False">
-                                            <Setter Property="Background" Value="#FFEBEE"/>
+                                        <DataTrigger Binding="{Binding IsSuccess, Mode=OneWay}" Value="False">
+                                            <Setter Property="Background" Value="{StaticResource DangerLightBrush}"/>
                                         </DataTrigger>
                                         <!-- 选中行高亮样式 -->
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="#E0F2FE"/>
+                                            <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -229,7 +211,7 @@
                                     <GridViewColumn Header="电芯条码" Width="130">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding CellId}" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                                <TextBlock Text="{Binding CellId, Mode=OneWay}" FontWeight="SemiBold" Foreground="#1E293B"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -240,39 +222,39 @@
                                                 <Border CornerRadius="3" Padding="8,2" HorizontalAlignment="Left">
                                                     <Border.Style>
                                                         <Style TargetType="Border">
-                                                            <Setter Property="Background" Value="#E0F2FE"/>
+                                                            <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Grade}" Value="A">
+                                                                <DataTrigger Binding="{Binding Grade, Mode=OneWay}" Value="A">
                                                                     <Setter Property="Background" Value="#E8F5E9"/>
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Grade}" Value="B">
-                                                                    <Setter Property="Background" Value="#E3F2FD"/>
+                                                                <DataTrigger Binding="{Binding Grade, Mode=OneWay}" Value="B">
+                                                                    <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Grade}" Value="C">
+                                                                <DataTrigger Binding="{Binding Grade, Mode=OneWay}" Value="C">
                                                                     <Setter Property="Background" Value="#FFF3E0"/>
                                                                 </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Grade}" Value="NG">
-                                                                    <Setter Property="Background" Value="#FFEBEE"/>
+                                                                <DataTrigger Binding="{Binding Grade, Mode=OneWay}" Value="NG">
+                                                                    <Setter Property="Background" Value="{StaticResource DangerLightBrush}"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Border.Style>
-                                                    <TextBlock Text="{Binding Grade}" FontWeight="Bold" FontSize="11">
+                                                    <TextBlock Text="{Binding Grade, Mode=OneWay}" FontWeight="Bold" FontSize="11">
                                                         <TextBlock.Style>
                                                             <Style TargetType="TextBlock">
-                                                                <Setter Property="Foreground" Value="#0369A1"/>
+                                                                <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Grade}" Value="A">
-                                                                        <Setter Property="Foreground" Value="#2E7D32"/>
+                                                                    <DataTrigger Binding="{Binding Grade, Mode=OneWay}" Value="A">
+                                                                        <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Grade}" Value="B">
-                                                                        <Setter Property="Foreground" Value="#1565C0"/>
+                                                                    <DataTrigger Binding="{Binding Grade, Mode=OneWay}" Value="B">
+                                                                        <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Grade}" Value="C">
-                                                                        <Setter Property="Foreground" Value="#E65100"/>
+                                                                    <DataTrigger Binding="{Binding Grade, Mode=OneWay}" Value="C">
+                                                                        <Setter Property="Foreground" Value="{StaticResource WarningBrush}"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Grade}" Value="NG">
-                                                                        <Setter Property="Foreground" Value="#C62828"/>
+                                                                    <DataTrigger Binding="{Binding Grade, Mode=OneWay}" Value="NG">
+                                                                        <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -286,7 +268,7 @@
                                     <GridViewColumn Header="分配料仓" Width="80">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding BinId}" Foreground="#475569" FontWeight="Medium"/>
+                                                <TextBlock Text="{Binding BinId, Mode=OneWay}" Foreground="{StaticResource NeutralBrush}" FontWeight="Medium"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -294,7 +276,7 @@
                                     <GridViewColumn Header="消耗时间" Width="80">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding DurationText}" Foreground="#64748B"/>
+                                                <TextBlock Text="{Binding DurationText, Mode=OneWay}" Foreground="#64748B"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -302,7 +284,7 @@
                                     <GridViewColumn Header="分选时间" Width="150">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding SortedAt, StringFormat='yyyy-MM-dd HH:mm:ss'}" Foreground="#64748B" FontSize="11"/>
+                                                <TextBlock Text="{Binding SortedAt, StringFormat='yyyy-MM-dd HH:mm:ss', Mode=OneWay}" Foreground="#64748B" FontSize="11"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -323,40 +305,40 @@
                 </Grid.RowDefinitions>
 
                 <!-- 等级分布统计 Card -->
-                <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}">
+                <Border Grid.Row="0" Style="{StaticResource CardStyle}">
                     <StackPanel>
-                        <TextBlock Text="等级分布统计" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Text="等级分布统计" Style="{StaticResource CardTitle}"/>
 
                         <UniformGrid Columns="2" Rows="2" Margin="0,5,0,0">
                             <!-- A级 统计卡片 -->
-                            <Border BorderThickness="1" BorderBrush="#E8F5E9" CornerRadius="6" Background="#F1F8E9" Padding="12" Margin="4">
+                            <Border Style="{StaticResource CardStyle}" Margin="4" Padding="12">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="A 级 (优等)" FontSize="12" Foreground="#33691E" HorizontalAlignment="Center" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding GradeACount}" FontSize="28" FontWeight="Bold" Foreground="#43A047" HorizontalAlignment="Center" Margin="5,5,5,0"/>
+                                    <TextBlock Text="A 级 (优等)" Style="{StaticResource DataLabel}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding GradeACount, Mode=OneWay}" Style="{StaticResource DataValue}" Foreground="{StaticResource SuccessBrush}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Border>
 
                             <!-- B级 统计卡片 -->
-                            <Border BorderThickness="1" BorderBrush="#E3F2FD" CornerRadius="6" Background="#EBF5FB" Padding="12" Margin="4">
+                            <Border Style="{StaticResource CardStyle}" Margin="4" Padding="12">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="B 级 (良品)" FontSize="12" Foreground="#0D47A1" HorizontalAlignment="Center" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding GradeBCount}" FontSize="28" FontWeight="Bold" Foreground="#0288D1" HorizontalAlignment="Center" Margin="5,5,5,0"/>
+                                    <TextBlock Text="B 级 (良品)" Style="{StaticResource DataLabel}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding GradeBCount, Mode=OneWay}" Style="{StaticResource DataValue}" Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Border>
 
                             <!-- C级 统计卡片 -->
-                            <Border BorderThickness="1" BorderBrush="#FFF3E0" CornerRadius="6" Background="#FFF8E1" Padding="12" Margin="4">
+                            <Border Style="{StaticResource CardStyle}" Margin="4" Padding="12">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="C 级 (次品)" FontSize="12" Foreground="#E65100" HorizontalAlignment="Center" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding GradeCCount}" FontSize="28" FontWeight="Bold" Foreground="#F57C00" HorizontalAlignment="Center" Margin="5,5,5,0"/>
+                                    <TextBlock Text="C 级 (次品)" Style="{StaticResource DataLabel}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding GradeCCount, Mode=OneWay}" Style="{StaticResource DataValue}" Foreground="{StaticResource WarningBrush}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Border>
 
                             <!-- NG级 统计卡片 -->
-                            <Border BorderThickness="1" BorderBrush="#FFEBEE" CornerRadius="6" Background="#FFEBEE" Padding="12" Margin="4">
+                            <Border Style="{StaticResource CardStyle}" Margin="4" Padding="12">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="NG 级 (不良)" FontSize="12" Foreground="#B71C1C" HorizontalAlignment="Center" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding GradeNgCount}" FontSize="28" FontWeight="Bold" Foreground="#D32F2F" HorizontalAlignment="Center" Margin="5,5,5,0"/>
+                                    <TextBlock Text="NG 级 (不良)" Style="{StaticResource DataLabel}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding GradeNgCount, Mode=OneWay}" Style="{StaticResource DataValue}" Foreground="{StaticResource DangerBrush}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Border>
                         </UniformGrid>
@@ -364,18 +346,18 @@
                 </Border>
 
                 <!-- 手动模拟分选 Card -->
-                <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Margin="5,5,5,0">
+                <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="5,5,5,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="手动模拟分选测试" Style="{StaticResource HeaderTextStyle}"/>
+                        <TextBlock Grid.Row="0" Text="手动模拟分选测试" Style="{StaticResource CardTitle}"/>
 
                         <StackPanel Grid.Row="1" Margin="5,10,5,5">
                             <TextBlock Text="在调试阶段，您可以输入模拟 OCV/IR 检测数据，手动触发分选流程，查看设备物理运动（虚拟）和料仓计数增加的完整链路。"
-                                       TextWrapping="Wrap" Foreground="#64748B" FontSize="12" LineHeight="18" Margin="0,0,0,20"/>
+                                       TextWrapping="Wrap" Foreground="{StaticResource NeutralBrush}" FontSize="12" LineHeight="18" Margin="0,0,0,20"/>
                             
                             <!-- 表单字段 -->
                             <Grid Margin="0,0,0,12">
@@ -384,7 +366,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="模拟条码：" VerticalAlignment="Center" Foreground="#475569" FontSize="13" FontWeight="Medium"/>
-                                <TextBox Grid.Column="1" Text="{Binding ManualCellId, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center" Background="#FAFAFA" BorderBrush="#E2E8F0" BorderThickness="1"/>
+                                <TextBox Grid.Column="1" Text="{Binding ManualCellId, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center" Background="#FAFAFA" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
                             </Grid>
 
                             <Grid Margin="0,0,0,12">
@@ -393,7 +375,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="模拟 OCV (mV)：" VerticalAlignment="Center" Foreground="#475569" FontSize="13" FontWeight="Medium"/>
-                                <TextBox Grid.Column="1" Text="{Binding ManualOcv, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center" Background="#FAFAFA" BorderBrush="#E2E8F0" BorderThickness="1"/>
+                                <TextBox Grid.Column="1" Text="{Binding ManualOcv, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center" Background="#FAFAFA" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
                             </Grid>
 
                             <Grid Margin="0,0,0,25">
@@ -402,12 +384,12 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="模拟 IR (mΩ)：" VerticalAlignment="Center" Foreground="#475569" FontSize="13" FontWeight="Medium"/>
-                                <TextBox Grid.Column="1" Text="{Binding ManualIr, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center" Background="#FAFAFA" BorderBrush="#E2E8F0" BorderThickness="1"/>
+                                <TextBox Grid.Column="1" Text="{Binding ManualIr, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center" Background="#FAFAFA" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
                             </Grid>
 
                             <!-- 触发按钮 -->
                             <Button Content="手动执行一次分选" 
-                                    Command="{Binding ManualSortCommand}"
+                                    Command="{Binding ManualSortCommand, Mode=OneWay}"
                                     Height="40" Background="#0F172A" Foreground="White" BorderThickness="0" FontWeight="SemiBold" FontSize="13">
                                 <Button.Style>
                                     <Style TargetType="Button">

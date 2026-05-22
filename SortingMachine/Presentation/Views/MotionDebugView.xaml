@@ -13,43 +13,42 @@
         <local:BoolToAlarmColorConverter x:Key="BoolToAlarmColorConverter"/>
     </UserControl.Resources>
     
-    <Grid Background="#F0F0F0">
+    <Grid Background="{StaticResource PageBgBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Top Toolbar -->
-        <Border Background="White" BorderBrush="#DDD" BorderThickness="0,0,0,1" Padding="10">
+        <Border Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="10">
             <DockPanel>
                 <Button Content="紧急停止" Command="{Binding EmergencyStopCommand}" 
-                        Background="Red" Foreground="White" FontSize="16" FontWeight="Bold"
-                        Padding="20,10" Width="150" DockPanel.Dock="Left"/>
+                        Style="{StaticResource EmergencyButton}" Width="150" DockPanel.Dock="Left"/>
                 
                 <Button Content="全轴回零" Command="{Binding HomeAllAxesCommand}" 
-                        Margin="10,0" Padding="15,5" DockPanel.Dock="Left"/>
+                        Style="{StaticResource SecondaryButton}" Margin="10,0" DockPanel.Dock="Left"/>
 
                 <Button Content="清除全报警" Command="{Binding ClearAllAlarmsCommand}" 
-                        Padding="15,5" DockPanel.Dock="Left"/>
+                        Style="{StaticResource SecondaryButton}" DockPanel.Dock="Left"/>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBlock Text="系统状态: " Foreground="#666"/>
-                    <TextBlock Text="{Binding PageStatus}" FontWeight="Bold" Foreground="Blue"/>
+                    <TextBlock Text="系统状态: " Foreground="{StaticResource NeutralBrush}"/>
+                    <TextBlock Text="{Binding PageStatus, Mode=OneWay}" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}"/>
                 </StackPanel>
             </DockPanel>
         </Border>
 
         <!-- Axis Panels -->
-        <Grid Grid.Row="1" Margin="5">
+        <Grid Grid.Row="1" Margin="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <local:AxisPanelView DataContext="{Binding AxisX}" Grid.Column="0"/>
-            <local:AxisPanelView DataContext="{Binding AxisY}" Grid.Column="1"/>
-            <local:AxisPanelView DataContext="{Binding AxisZ}" Grid.Column="2"/>
+            <local:AxisPanelView DataContext="{Binding AxisX, Mode=OneWay}" Grid.Column="0" Margin="8"/>
+            <local:AxisPanelView DataContext="{Binding AxisY, Mode=OneWay}" Grid.Column="1" Margin="8"/>
+            <local:AxisPanelView DataContext="{Binding AxisZ, Mode=OneWay}" Grid.Column="2" Margin="8"/>
         </Grid>
     </Grid>
 </UserControl>

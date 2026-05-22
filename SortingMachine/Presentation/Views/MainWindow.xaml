@@ -4,23 +4,129 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:local="clr-namespace:SortingMachine.Presentation.Views"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}"
+        Title="锂电池检测分选机控制系统 v1.0"
         Width="1280" Height="800"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
+    
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="50" 
+                      ResizeBorderThickness="6" 
+                      GlassFrameThickness="1" 
+                      UseAeroCaptionButtons="False" 
+                      CornerRadius="0"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Minimize" />
+        <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Maximize" />
+        <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Restore" />
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
+    </Window.CommandBindings>
+
+    <Window.Resources>
+        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#20FFFFFF"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#40FFFFFF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E81123"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#F1707A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <DockPanel>
         <!-- 顶部工具栏 (Sprint S5 优化) -->
-        <ToolBar DockPanel.Dock="Top" Height="40">
-            <TextBlock Text="控制台主菜单" VerticalAlignment="Center" Margin="8,0"/>
-        </ToolBar>
+        <Border DockPanel.Dock="Top" Height="50"
+                Background="{StaticResource PrimaryBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- 左侧：系统图标 + 名称 -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0">
+                    <TextBlock Text="⚡" FontSize="20" Foreground="White" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="锂电池检测分选机控制系统"
+                               FontSize="15" FontWeight="SemiBold"
+                               Foreground="White" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- 右侧：最小化/最大化/关闭按钮 + 版本号 -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="v1.0" Foreground="#90CAF9" VerticalAlignment="Center" FontSize="12" Margin="0,0,16,0"/>
+                    
+                    <!-- 最小化 按钮 -->
+                    <Button Command="{x:Static SystemCommands.MinimizeWindowCommand}" 
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            Style="{StaticResource TitleBarButtonStyle}" 
+                            Content="⎯"/>
+                    
+                    <!-- 最大化/还原 按钮 -->
+                    <Button WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
+                                <Setter Property="Content" Value="☐"/>
+                                <Setter Property="Command" Value="{x:Static SystemCommands.MaximizeWindowCommand}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+                                        <Setter Property="Content" Value="🗗"/>
+                                        <Setter Property="Command" Value="{x:Static SystemCommands.RestoreWindowCommand}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    <!-- 关闭 按钮 -->
+                    <Button Command="{x:Static SystemCommands.CloseWindowCommand}" 
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            Style="{StaticResource TitleBarCloseButtonStyle}" 
+                            Content="✕"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- 底部状态栏 -->
-        <StatusBar DockPanel.Dock="Bottom" Height="24">
+        <StatusBar DockPanel.Dock="Bottom" Height="28"
+                   Background="{StaticResource PrimaryBrush}">
             <StatusBarItem>
-                <TextBlock Text="{Binding StatusText}"/>
+                <TextBlock Text="{Binding StatusText}" Foreground="White" FontSize="12"/>
             </StatusBarItem>
-            <Separator/>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="锂电分选系统 v1.0"/>
+                <TextBlock Text="锂电分选系统 v1.0" Foreground="#90CAF9" FontSize="11"/>
             </StatusBarItem>
         </StatusBar>
 
