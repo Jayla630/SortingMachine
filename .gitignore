@@ -429,5 +429,7 @@ FodyWeavers.xsd
 *.msp
 
 *.md
+!README.md
 docs/
+!docs/screenshots/
 *.db
