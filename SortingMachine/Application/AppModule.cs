@@ -11,6 +11,7 @@ using SortingMachine.Domain.Recipe;
 using SortingMachine.Infrastructure.Persistence;
 using FreeSql;
 using SortingMachine.Domain;
+using SortingMachine.Infrastructure.Motion;
 
 namespace SortingMachine.Application;
 
@@ -18,10 +19,11 @@ public class AppModule : IModule
 {
     public void OnInitialized(IContainerProvider containerProvider)
     {
-        // TODO: Sprint S3 - 初始化硬件通讯
+        // 1. 初始化运动控制器（必须第一步）
+        var motionController = containerProvider.Resolve<IMotionController>();
+        motionController.InitializeAsync().GetAwaiter().GetResult();
 
-        // 初始化数据库（建表 + 种子数据）
-        // TODO: Prism 9 模块异步初始化方案待优化
+        // 2. 初始化数据库（建表 + 种子数据）
         var dbInit = containerProvider.Resolve<DatabaseInitializer>();
         dbInit.InitializeAsync().GetAwaiter().GetResult();
     }
