@@ -28,7 +28,8 @@ public partial class App : PrismApplication
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
         // ── Motion (S1) ──────────────────────────────────────
-        containerRegistry.RegisterSingleton<IMotionController, MockMotionController>();
+        var mockController = new MockMotionController();
+        containerRegistry.RegisterInstance<IMotionController>(mockController);
         containerRegistry.RegisterSingleton<IDigitalIO, MockDigitalIO>();
 
         // ── Safety & Homing (S2) ─────────────────────────────

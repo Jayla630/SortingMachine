@@ -29,26 +29,39 @@ public sealed class MockMotionController : IMotionController
     public event EventHandler<AxisStatusChangedEventArgs>? AxisStatusChanged;
     public event EventHandler<MotionAlarmEventArgs>? AlarmOccurred;
 
-    /// <summary>
-    /// 使用默认轴配置构造 Mock。
-    /// </summary>
     public MockMotionController()
-        : this(new Dictionary<AxisId, AxisConfig>
+    {
+        _configs = new Dictionary<AxisId, AxisConfig>
         {
             [AxisId.X] = AxisConfig.DefaultX,
             [AxisId.Y] = AxisConfig.DefaultY,
             [AxisId.Z] = AxisConfig.DefaultZ
-        })
-    {
+        };
+
+        foreach (var (id, config) in _configs)
+        {
+            _axes[id] = new AxisStatus
+            {
+                AxisId = id,
+                Position = config.OriginOffset,
+                Velocity = 0,
+                IsEnabled = false,
+                IsHomed = false,
+                IsMoving = false,
+                PositiveLimitHit = false,
+                NegativeLimitHit = false,
+                HasAlarm = false,
+                AlarmMessage = null,
+                Timestamp = DateTime.UtcNow
+            };
+            _activeMovementCts[id] = null;
+        }
     }
 
-    /// <summary>
-    /// 使用自定义轴配置构造 Mock（允许调用方覆盖软限位等参数）。
-    /// </summary>
+    // 保留参数化构造函数供测试使用，但内容独立，不靠链式调用
     public MockMotionController(Dictionary<AxisId, AxisConfig> configs)
     {
         _configs = configs;
-
         foreach (var (id, config) in configs)
         {
             _axes[id] = new AxisStatus
@@ -129,6 +142,9 @@ public sealed class MockMotionController : IMotionController
     /// <summary>模拟伺服使能：将轴置为 IsEnabled=true。</summary>
     public Task<MotionResult> EnableAxisAsync(AxisId axis, CancellationToken ct = default)
     {
+        System.Diagnostics.Debug.WriteLine(
+        $"[MockCtrl] EnableAxis({axis}) | _axes.Count={_axes.Count} | Keys=[{string.Join(",", _axes.Keys)}] | HashCode={GetHashCode()}");
+
         if (!_axes.TryGetValue(axis, out var current))
             return Task.FromResult(MotionResult.Failure(MotionErrorCode.HardwareError, $"Axis {axis} not found"));
 
