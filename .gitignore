@@ -430,3 +430,4 @@ FodyWeavers.xsd
 
 *.md
 docs/
+*.db
