@@ -165,12 +165,12 @@
                                             </Grid.RowDefinitions>
                                             <!-- 信息排版 -->
                                             <DockPanel Grid.Row="0" LastChildFill="True" Margin="0,0,0,8">
-                                                <TextBlock DockPanel.Dock="Right" Text="{Binding CountLabel}" FontWeight="Bold" FontSize="13" Foreground="#475569"/>
+                                                <TextBlock DockPanel.Dock="Right" Text="{Binding CountLabel, Mode=OneWay}" ToolTip="{Binding CountLabel, Mode=OneWay}" FontWeight="Bold" FontSize="13" Foreground="#475569"/>
                                                 
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding BinId}" FontWeight="Bold" FontSize="14" Foreground="#0F172A"/>
+                                                    <TextBlock Text="{Binding BinId, Mode=OneWay}" ToolTip="{Binding BinId, Mode=OneWay}" FontWeight="Bold" FontSize="14" Foreground="#0F172A"/>
                                                     <Border Margin="8,0,0,0" CornerRadius="3" Background="#F1F5F9" Padding="6,2" VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding GradeLabel}" FontSize="11" Foreground="#475569" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding GradeLabel, Mode=OneWay}" ToolTip="{Binding GradeLabel, Mode=OneWay}" FontSize="11" Foreground="#475569" FontWeight="SemiBold"/>
                                                     </Border>
                                                     
                                                     <!-- 满仓警告文字 -->
@@ -182,7 +182,7 @@
                                             </DockPanel>
                                             
                                             <!-- 进度条 -->
-                                            <ProgressBar Value="{Binding FillPercent, Mode=OneWay}" Maximum="100" Height="16"
+                                            <ProgressBar Value="{Binding FillPercent, Mode=OneWay}" Maximum="100" Height="20"
                                                          Foreground="{Binding StatusColor, Mode=OneWay}"/>
                                         </Grid>
                                     </Border>

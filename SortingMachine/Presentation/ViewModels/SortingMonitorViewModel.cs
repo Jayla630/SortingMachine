@@ -170,6 +170,17 @@ public class SortingMonitorViewModel : BindableBase
             var active = _sortingService.ActiveRecipe;
             if (active == null)
             {
+                // Wait up to 1 second (10 x 100ms) for AppModule to initialize database and active recipe
+                for (int i = 0; i < 10; i++)
+                {
+                    active = _sortingService.ActiveRecipe;
+                    if (active != null) break;
+                    await Task.Delay(100);
+                }
+            }
+
+            if (active == null)
+            {
                 var dbActive = await _recipeRepository.GetActiveAsync();
                 if (dbActive != null)
                 {
@@ -194,6 +205,16 @@ public class SortingMonitorViewModel : BindableBase
 
     private void ExecuteStartSorting()
     {
+        if (_sortingService.ActiveRecipe == null)
+        {
+            var active = _recipeRepository.GetActiveAsync().GetAwaiter().GetResult();
+            if (active != null)
+            {
+                _sortingService.LoadRecipe(active);
+                RefreshBinStatus();
+            }
+        }
+
         if (_sortingService.ActiveRecipe == null)
         {
             SortingStatus = "请先在配方管理页激活配方";
@@ -237,6 +258,16 @@ public class SortingMonitorViewModel : BindableBase
 
     private async Task ExecuteManualSortAsync()
     {
+        if (_sortingService.ActiveRecipe == null)
+        {
+            var active = await _recipeRepository.GetActiveAsync();
+            if (active != null)
+            {
+                _sortingService.LoadRecipe(active);
+                RefreshBinStatus();
+            }
+        }
+
         if (_sortingService.ActiveRecipe == null)
         {
             SortingStatus = "请先在配方管理页激活配方";
