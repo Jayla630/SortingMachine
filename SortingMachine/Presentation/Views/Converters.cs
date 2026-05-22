@@ -77,7 +77,7 @@ public class StatusToColorConverter : IValueConverter
     private static readonly string[] RedKeywords =
         ["报警", "失败", "异常", "错误", "限位", "急停", "Fault"];
     private static readonly string[] GreenKeywords =
-        ["运行中", "运行", "启动", "成功", "完成", "就绪", "已清除", "已回零", "全绿", "Running", "Online"];
+        ["运行中", "运行", "启动", "成功", "完成", "就绪", "已清除", "已全部清除", "全部清除", "清除", "已回零", "全绿", "Running", "Online"];
     private static readonly string[] YellowKeywords =
         ["暂停", "警告", "等待", "Warning", "Paused"];
 
@@ -86,16 +86,17 @@ public class StatusToColorConverter : IValueConverter
         var text = value as string ?? string.Empty;
 
         // Try to retrieve brushes from App resources, fallback to raw colors if not found
-        if (RedKeywords.Any(k => text.Contains(k)))
-        {
-            return System.Windows.Application.Current?.TryFindResource("DangerBrush") as Brush 
-                ?? new SolidColorBrush(Color.FromRgb(0xE5, 0x39, 0x35));
-        }
-
+        // ✅ 先判绿（已处理的状态优先级高于关键词匹配，如"报警已全部清除"应为绿）
         if (GreenKeywords.Any(k => text.Contains(k)))
         {
             return System.Windows.Application.Current?.TryFindResource("SuccessBrush") as Brush 
                 ?? new SolidColorBrush(Color.FromRgb(0x43, 0xA0, 0x47));
+        }
+
+        if (RedKeywords.Any(k => text.Contains(k)))
+        {
+            return System.Windows.Application.Current?.TryFindResource("DangerBrush") as Brush 
+                ?? new SolidColorBrush(Color.FromRgb(0xE5, 0x39, 0x35));
         }
 
         if (YellowKeywords.Any(k => text.Contains(k)))
