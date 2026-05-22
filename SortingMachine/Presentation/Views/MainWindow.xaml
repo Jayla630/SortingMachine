@@ -30,8 +30,7 @@
                 <local:MotionDebugView />
             </TabItem>
             <TabItem Header="分选监控">
-                <TextBlock Text="Sprint S4 以后完善" HorizontalAlignment="Center"
-                           VerticalAlignment="Center" Foreground="Gray"/>
+                <local:SortingMonitorView />
             </TabItem>
             <TabItem Header="配方管理">
                 <local:RecipeView />

@@ -35,6 +35,7 @@ public class DatabaseInitializer
 
             // 1. CodeFirst 建表
             _fsql.CodeFirst.SyncStructure<RecipeEntity>();
+            _fsql.CodeFirst.SyncStructure<SortingLogEntity>();
 
             // 2. 如果没有任何配方，插入一条默认种子配方
             if (!await _fsql.Select<RecipeEntity>().AnyAsync())

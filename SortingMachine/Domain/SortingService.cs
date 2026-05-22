@@ -20,6 +20,7 @@ public class SortingService : ISortingService
 {
     private readonly IMotionController _motion;
     private readonly ISafetyValidator _safety;
+    private readonly ISortingLogRepository _logRepository;
     private readonly ILogger<SortingService> _logger;
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
@@ -31,10 +32,12 @@ public class SortingService : ISortingService
     public SortingService(
         IMotionController motionController,
         ISafetyValidator safetyValidator,
+        ISortingLogRepository logRepository,
         ILogger<SortingService> logger)
     {
         _motion = motionController;
         _safety = safetyValidator;
+        _logRepository = logRepository;
         _logger = logger;
     }
 
@@ -217,6 +220,15 @@ public class SortingService : ISortingService
             measurement.CellId, targetBin.BinId, gradeDecision.Grade, sw.ElapsedMilliseconds);
 
         SortingCompleted?.Invoke(this, new SortingCompletedEventArgs(sortingResult, targetBin));
+
+        // 分选完成，写日志（fire-and-forget，不阻塞分选节拍）
+        var log = SortingLog.FromResult(sortingResult, measurement,
+            ActiveRecipe?.RecipeId, ActiveRecipe?.ProductModel);
+        _ = _logRepository.SaveAsync(log).ContinueWith(t =>
+        {
+            if (t.IsFaulted)
+                _logger.LogError(t.Exception, "分选日志写入失败 CellId={CellId}", measurement.CellId);
+        });
 
         if (targetBin.IsFull)
         {

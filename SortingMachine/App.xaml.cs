@@ -60,6 +60,7 @@ public partial class App : PrismApplication
         }
 
         containerRegistry.RegisterSingleton<IRecipeRepository, RecipeRepository>();
+        containerRegistry.RegisterSingleton<ISortingLogRepository, SortingLogRepository>();
         containerRegistry.RegisterSingleton<DatabaseInitializer>();
     }
 

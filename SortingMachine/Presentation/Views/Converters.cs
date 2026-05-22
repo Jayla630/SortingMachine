@@ -44,3 +44,30 @@ public class BoolToAlarmColorConverter : IValueConverter
         throw new NotImplementedException();
     }
 }
+
+public class StringToBrushConverter : IValueConverter
+{
+    private static readonly BrushConverter Converter = new();
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is string colorStr)
+        {
+            try
+            {
+                return (Brush)Converter.ConvertFromString(colorStr)!;
+            }
+            catch
+            {
+                return Brushes.Gray;
+            }
+        }
+        return Brushes.Gray;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+

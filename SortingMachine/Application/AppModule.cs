@@ -26,6 +26,15 @@ public class AppModule : IModule
         // 2. 初始化数据库（建表 + 种子数据）
         var dbInit = containerProvider.Resolve<DatabaseInitializer>();
         dbInit.InitializeAsync().GetAwaiter().GetResult();
+
+        // 3. 加载当前激活的配方到分选服务
+        var recipeRepo = containerProvider.Resolve<IRecipeRepository>();
+        var sortingService = containerProvider.Resolve<ISortingService>();
+        var activeRecipe = recipeRepo.GetActiveAsync().GetAwaiter().GetResult();
+        if (activeRecipe != null)
+        {
+            sortingService.LoadRecipe(activeRecipe);
+        }
     }
 
     public void RegisterTypes(IContainerRegistry containerRegistry)

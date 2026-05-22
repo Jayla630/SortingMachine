@@ -517,6 +517,7 @@ public sealed class SortingServiceTests : IClassFixture<SortingServiceFixture>
         return new SortingService(
             controller,
             safetyValidator,
+            Mock.Of<ISortingLogRepository>(),
             NullLogger<SortingService>.Instance);
     }
 

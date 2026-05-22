@@ -51,6 +51,7 @@ public sealed class SortingServiceFixture : IAsyncLifetime
         SortingService = new SortingService(
             MockController,
             MockSafetyValidator.Object,
+            Mock.Of<ISortingLogRepository>(),
             NullLogger<SortingService>.Instance);
     }
 
