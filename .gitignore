@@ -430,6 +430,6 @@ FodyWeavers.xsd
 
 *.md
 !README.md
-docs/
+docs/*
 !docs/screenshots/
 *.db
