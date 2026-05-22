@@ -31,6 +31,9 @@ public interface ISortingLogRepository
 
     /// <summary>总记录数</summary>
     Task<long> GetTotalCountAsync();
+
+    /// <summary>标记记录为已上报 MES</summary>
+    Task MarkAsUploadedAsync(IEnumerable<long> ids);
 }
 
 #region DesignNotes

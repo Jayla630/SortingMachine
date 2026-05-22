@@ -11,6 +11,8 @@
     <PackageReference Include="Prism.DryIoc" Version="9.0.*" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.*" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.*" />
     <PackageReference Include="FreeSql" Version="3.*" />
     <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.*" />
     <PackageReference Include="Stateless" Version="5.*" />

@@ -36,8 +36,7 @@
                 <local:RecipeView />
             </TabItem>
             <TabItem Header="报警记录">
-                <TextBlock Text="Sprint S6 以后完善" HorizontalAlignment="Center"
-                           VerticalAlignment="Center" Foreground="Gray"/>
+                <local:AlarmLogView />
             </TabItem>
         </TabControl>
     </DockPanel>

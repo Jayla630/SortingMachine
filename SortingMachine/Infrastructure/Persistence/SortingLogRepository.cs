@@ -4,6 +4,8 @@
 // Sprint: S4 | Agent: Claude Code
 // =========================================================
 
+using System.Collections.Generic;
+using System.Linq;
 using FreeSql;
 using FreeSql.DataAnnotations;
 using Microsoft.Extensions.Logging;
@@ -130,6 +132,19 @@ public class SortingLogRepository : ISortingLogRepository
     public async Task<long> GetTotalCountAsync()
     {
         return await _fsql.Select<SortingLogEntity>().CountAsync();
+    }
+
+    public async Task MarkAsUploadedAsync(IEnumerable<long> ids)
+    {
+        var idList = ids.ToList();
+        if (!idList.Any()) return;
+
+        await _fsql.Update<SortingLogEntity>()
+            .Set(x => x.MesUploaded, true)
+            .Where(x => idList.Contains(x.Id))
+            .ExecuteAffrowsAsync();
+
+        _logger.LogInformation("Marked {Count} logs as MES uploaded", idList.Count);
     }
 
     private static SortingLogEntity MapToEntity(SortingLog log)

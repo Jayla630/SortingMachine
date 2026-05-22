@@ -14,6 +14,7 @@ using SortingMachine.Domain;
 using SortingMachine.Domain.Recipe;
 using SortingMachine.Domain.StateMachines;
 using SortingMachine.Infrastructure.IO;
+using SortingMachine.Infrastructure.Mes;
 using SortingMachine.Infrastructure.Motion;
 using SortingMachine.Infrastructure.Persistence;
 using SortingMachine.Presentation.Views;
@@ -62,6 +63,7 @@ public partial class App : PrismApplication
         containerRegistry.RegisterSingleton<IRecipeRepository, RecipeRepository>();
         containerRegistry.RegisterSingleton<ISortingLogRepository, SortingLogRepository>();
         containerRegistry.RegisterSingleton<DatabaseInitializer>();
+        containerRegistry.RegisterSingleton<IMesUploader, MockMesUploadService>();
     }
 
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
