@@ -5,6 +5,7 @@
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com)
 [![WPF](https://img.shields.io/badge/WPF-Prism%209-68217A)](https://prismlibrary.com)
 [![Tests](https://img.shields.io/badge/Tests-139%20passed-43A047)](./SortingMachine.Tests)
+[![Coverage](./docs/badge_linecoverage.svg)](./docs/screenshots/coverage-summary.png)
 [![License](https://img.shields.io/badge/License-MIT-blue)](./LICENSE)
 
 ---
@@ -44,6 +45,11 @@ OCV/IR 检测结果 → 等级判定（A/B/C/NG）→ XY 龙门定位料仓 → 
 分选失败记录追溯，MES 批量上报与单条重传
 
 ![报警记录](docs/screenshots/alarm-log.png)
+
+### 测试覆盖率报告
+覆盖率统计包含 Domain + Infrastructure 核心业务层，Presentation 层（WPF ViewModel/View）未计入。
+
+![覆盖率报告](docs/screenshots/coverage-summary.png)
 
 ---
 
