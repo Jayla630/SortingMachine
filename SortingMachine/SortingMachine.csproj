@@ -13,8 +13,19 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.*" />
+    <PackageReference Include="Serilog" Version="4.*" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.*" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.*" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.*" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.*" />
     <PackageReference Include="FreeSql" Version="3.*" />
     <PackageReference Include="FreeSql.Provider.Sqlite" Version="3.*" />
     <PackageReference Include="Stateless" Version="5.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

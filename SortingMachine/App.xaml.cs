@@ -4,8 +4,9 @@
 // Sprint: S3-Hotfix | Agent: Claude Code
 // =========================================================
 using System.Windows;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using Serilog;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -40,8 +41,28 @@ public partial class App : PrismApplication
         // ── Sorting Service (S3) ─────────────────────────────
         containerRegistry.RegisterSingleton<ISortingService, SortingService>();
 
-        // ── Logging ──────────────────────────────────────────
-        containerRegistry.Register(typeof(ILogger<>), typeof(NullLogger<>));
+        // ── Logging (Serilog) ────────────────────────────────
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+            .Build();
+
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(configuration)
+            .Enrich.FromLogContext()
+            .Enrich.WithProperty("Application", "SortingMachine")
+            .CreateLogger();
+
+        var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.AddSerilog(Log.Logger, dispose: false);
+        });
+
+        containerRegistry.RegisterInstance<ILoggerFactory>(loggerFactory);
+        containerRegistry.Register(typeof(ILogger<>), typeof(Logger<>));
+
+        Log.Information("=== 锂电池检测分选机控制系统启动 ===");
+        Log.Information("版本：v1.0 | 模式：仿真（MockMotionController）");
 
         // ── FreeSql + Recipe (S3) ────────────────────────────
         try
@@ -69,5 +90,12 @@ public partial class App : PrismApplication
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
     {
         moduleCatalog.AddModule<AppModule>();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        Log.Information("=== 系统正常退出 ===");
+        Log.CloseAndFlush();
+        base.OnExit(e);
     }
 }

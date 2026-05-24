@@ -433,3 +433,8 @@ FodyWeavers.xsd
 docs/*
 !docs/screenshots/
 *.db
+
+# Coverage reports
+coverage-report/
+coverage-results/
+*.cobertura.xml
